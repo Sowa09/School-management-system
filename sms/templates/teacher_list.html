@@ -1,10 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends '__base__.html' %}
 
-</body>
-</html>
+{% block content %}
+
+    <h1>Nauczyciele</h1>
+    <ul>
+        {% for t in teacher_list %}
+            <li>{{ forloop.counter }}{{ t.first_name }} - {{ t.last_name }}</li>
+            {% empty %}
+            <li>Lista pusta</li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
