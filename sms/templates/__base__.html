@@ -1,0 +1,28 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}{% endblock title %} Edukator Kielce</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+</head>
+<body>
+
+<ul>
+    <li><a href="teachers/">Nuaczyciele</a></li>
+    <li><a href="students/">Uczniowie</a></li>
+    <li><a href="contact/">Kontakt</a></li>
+    <li><a href="http://www.edukatorkielce.pl/">About</a></li>
+    <li><a href="{% url 'logout' %}">Wyloguj</a></li>
+    <img src="{% static '/logo.png' %}">
+</ul>
+
+<!-- //--------------------------- page content -------------------------// -->
+{% block content %}{% endblock content %}
+<!-- //--------------------------- page content end ---------------------// -->
+
+</body>
+</html>
