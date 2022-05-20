@@ -104,17 +104,5 @@ class StudentDetailsView(View):
             'student': student_details
         }
         return render(request, 'student_details.html', context)
-#
-# class PresenceListView(View):
-#
-#     def get(self, request, student_id, date):
-#         student = get_object_or_404(Student, pk=student_id)
-#         form = PresenceListForm(initial={'student': student, 'day': date})
-#         return render(request, 'presence.html', {'form': form})
-#
-#     def post(self, request, student_id, date):
-#         form = PresenceListForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return HttpResponseRedirect(f'/student/{student_id}/')
-#         return render(request, 'presence.html', {'form': form})
+
+
