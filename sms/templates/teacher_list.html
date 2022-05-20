@@ -5,9 +5,9 @@
     <h1>Nauczyciele</h1>
     <ul>
         {% for t in teacher_list %}
-            <li>{{ forloop.counter }}{{ t.first_name }} - {{ t.last_name }}</li>
+            <ol> {{ t.first_name }}  {{ t.last_name }}</ol>
             {% empty %}
-            <li>Lista pusta</li>
+            <ol>Lista pusta</ol>
         {% endfor %}
     </ul>
 

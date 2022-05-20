@@ -16,7 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from main_app.views import LoginView, LogoutView, BaseView, TeacherListView, TeacherFormView
+from main_app.views import LoginView, LogoutView, BaseView, TeacherListView, TeacherFormView, StudentListView, \
+    StudentFormView, StudentDetailsView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +27,7 @@ urlpatterns = [
     path('index/', BaseView.as_view(), name='index'),
     path('teacher/list', TeacherListView.as_view(), name='teacher-list'),
     path('teacher/add', TeacherFormView.as_view(), name='teacher-add'),
+    path('student/list', StudentListView.as_view(), name='student-list'),
+    path('student/add', StudentFormView.as_view(), name='student-add'),
+    path('student/<int:student_id>', StudentDetailsView.as_view(), name='student-details'),
 ]
