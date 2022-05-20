@@ -97,7 +97,10 @@ class StudentFormView(LoginRequiredMixin, View):
         return render(request, 'student_form.html', {'form': form})
 
 
-class StudentDetailsView(View):
+class StudentDetailsView(LoginRequiredMixin, View):
+    login_url = '/'
+    redirect_field_name = 'index'
+
     def get(self, request, student_id):
         student_details = get_object_or_404(Student, pk=student_id)
         context = {
@@ -105,4 +108,4 @@ class StudentDetailsView(View):
         }
         return render(request, 'student_details.html', context)
 
-
+# SUBJECT VIEW
