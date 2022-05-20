@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+    Imię: {{ student.first_name }} <br>
+    Nazwisko: {{ student.last_name }}<br>
+    Klasa: {{ student.get_school_class_display }}<br>
+    {% if student.year_of_birth %}
+        Rok urodzenia: {{ student.year_of_birth }}
+    {% endif %}
+
+{% endblock %}

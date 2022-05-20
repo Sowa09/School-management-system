@@ -1,0 +1,42 @@
+{% extends 'base/base.html' %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-align-justify"></i> Students Academic Info
+                </div>
+                <div class="card-body">
+
+                    <tr>
+                        <td>Academic Year: {{ single_student.academic_year }}</td>
+                        <br>
+                        <td>Admission Date: {{ single_student.admission_date }}</td>
+                        <br>
+                        <td>Admission ID: {{ single_student.admission_id }}</td>
+                        <br>
+                        <td>Class: {{ single_student.class_type }}</td>
+                        <br>
+                        <td>Section: {{ single_student.section_type }}</td>
+                        <br>
+                        <td>Shift: {{ single_student.shift_type }}</td>
+                    </tr>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-align-justify"></i> Students Personal Info
+                </div>
+                <div class="card-body">
+
+                    <h6>{{ single_student.name }}</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
