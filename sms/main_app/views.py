@@ -1,20 +1,14 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
+from django.contrib.auth.models import User
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic.list import ListView
 
-from main_app.models import Teacher, TeacherForm, Student, StudentForm, PresenceListForm
 
-
-class BaseView(LoginRequiredMixin, View):
-    login_url = '/'
-    redirect_field_name = 'index'
-
-    def get(self, request):
-        return render(request, '__base__.html')
+from .models import Teacher, TeacherForm, Student, StudentForm, PresenceListForm
 
 
 class LogoutView(View):
@@ -30,15 +24,21 @@ class LoginView(View):
     def post(self, request):
         username = request.POST['uname']
         password = request.POST['psw']
-        remember_me = request.POST.get('remember', True)
+
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            if not remember_me:
-                request.session.set_expiry(0)
             return redirect('index')
         else:
             return HttpResponse('Błędny login lub hasło')
+
+
+class BaseView(LoginRequiredMixin, View):
+    login_url = '/'
+    redirect_field_name = 'index'
+
+    def get(self, request):
+        return render(request, '__base__.html')
 
 
 # TEACHER VIEWS
@@ -108,4 +108,3 @@ class StudentDetailsView(LoginRequiredMixin, View):
         }
         return render(request, 'student_details.html', context)
 
-# SUBJECT VIEW
