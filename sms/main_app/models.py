@@ -1,5 +1,8 @@
 from django.db import models
 from django.forms.models import ModelForm
+import datetime
+
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 GENDER_CHOICES = [
     ('M', 'Mężczyzna'),
@@ -40,6 +43,23 @@ GRADES = (
 )
 
 
+def current_year():
+    return datetime.date.today().year
+
+
+def max_value_current_year(value):
+    return MaxValueValidator(current_year())(value)
+
+
+# MODELS
+
+class Subject(models.Model):
+    name = models.CharField(choices=SCHOOL_SUBJECT, max_length=32, verbose_name='Przedmiot')
+
+    def __str__(self):
+        return f'{self.name}'
+
+
 class Teacher(models.Model):
     first_name = models.CharField(max_length=32, verbose_name='Imię')
     last_name = models.CharField(max_length=32, verbose_name='Nazwisko')
@@ -55,12 +75,32 @@ class TeacherForm(ModelForm):
         fields = '__all__'
 
 
+class Grades(models.Model):
+    grade = models.FloatField(choices=GRADES)
+    student = models.ForeignKey('Student', on_delete=models.CASCADE, related_name='student_grades')
+    school_subject = models.ForeignKey('Subject', on_delete=models.CASCADE)
+
+
+class SchoolClass(models.Model):
+    year = models.PositiveIntegerField(
+        default=current_year(), validators=[MinValueValidator(2016), max_value_current_year])
+
+    def __str__(self):
+        return f'{self.year}'
+
+
+class SchoolClassForm(ModelForm):
+    class Meta:
+        model = SchoolClass
+        fields = '__all__'
+
+
 class Student(models.Model):
     first_name = models.CharField(max_length=32, verbose_name='Imię')
     last_name = models.CharField(max_length=32, verbose_name='Nazwisko')
     gender = models.CharField(choices=GENDER_CHOICES, max_length=16, verbose_name='Płeć')
     age = models.IntegerField(verbose_name='Wiek')
-    teacher = models.ManyToManyField(Teacher)
+    grades = models.ManyToManyField(Subject, through='Grades')
 
     def __str__(self):
         return f'{self.first_name} {self.last_name} {self.age}'
@@ -82,18 +122,3 @@ class PresenceListForm(ModelForm):
     class Meta:
         model = PresenceList
         fields = '__all__'
-
-
-class Subject(models.Model):
-    name = models.CharField(choices=SCHOOL_SUBJECT, max_length=32, verbose_name='Przedmiot')
-    student = models.ManyToManyField(Student)
-    teacher = models.ManyToManyField(Teacher)
-
-    def __str__(self):
-        return f'{self.name}'
-
-
-class StudentGrades(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    school_subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    grade = models.FloatField(choices=GRADES)
