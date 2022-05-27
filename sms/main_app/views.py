@@ -1,14 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-from django.contrib.auth.models import User
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic.list import ListView
 
-
-from .models import Teacher, TeacherForm, Student, StudentForm, PresenceListForm
+from .models import Teacher, TeacherForm, Student, StudentForm, PresenceListForm, SchoolClassForm, SchoolClass
 
 
 class LogoutView(View):
@@ -107,4 +105,57 @@ class StudentDetailsView(LoginRequiredMixin, View):
             'student': student_details
         }
         return render(request, 'student_details.html', context)
+
+
+class SchoolClassListView(LoginRequiredMixin, ListView):
+    login_url = '/'
+    redirect_field_name = 'index'
+
+    model = SchoolClass
+    template_name = 'school_class_list.html'
+    context_object_name = 'class_list'
+    queryset = SchoolClass.objects.all().order_by('name')
+
+
+class SchoolClassFormView(LoginRequiredMixin, View):
+    login_url = '/'
+    redirect_field_name = 'index'
+
+    def get(self, request):
+        form = SchoolClassForm
+        return render(request, 'school_class_form.html', {'form': form})
+
+    def post(self, request):
+        form = SchoolClassForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return render(request, 'school_class_form.html', {'form': form})
+        return render(request, 'school_class_form.html', {'form': form})
+
+
+class SchoolClassModify(LoginRequiredMixin, View):
+    login_url = '/'
+    redirect_field_name = 'index'
+
+    def get(self, request, class_id):
+        c = SchoolClass.objects.get(pk=class_id)
+        form = SchoolClassForm(instance=c)
+        return render(request, 'edit_class.html', {'form': form})
+
+    def post(self, request, class_id):
+        c = SchoolClass.objects.get(pk=class_id)
+        form = SchoolClassForm(request.POST, instance=c)
+        if form.is_valid():
+            form.save()
+            return redirect('class-list')
+
+
+class StudentInClassDetailView(LoginRequiredMixin, ListView):
+    login_url = '/'
+    redirect_field_name = 'index'
+
+    model = Student
+    template_name = 'class_details.html'
+    context_object_name = 'class_details'
+    queryset = Student.objects.all().order_by('first_name')
 
