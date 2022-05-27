@@ -2,16 +2,30 @@
 
 {% block content %}
     <h1>Lista klas</h1>
-    <ul>
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nazwa</th>
+            <th scope="col">Rok rozpoczęcia</th>
+            <th scope="col">Lista uczniów</th>
+            <th scope="col">Edytuj klasę</th>
+        </tr>
+        </thead>
+        <tbody>
         {% for c in class_list %}
-            <br>
-            Nazwa: {{ c.name }} <br>
-            Rok rozpoczęcia:{{ c.year }} <br>
-            <a href="{% url 'class-details' c.id %}">Lista uczniów</a> <br>
-            <a href="{% url 'class-modify' c.id %}">Edytuj klasę</a><br>
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ c.name }}</td>
+                <td>{{ c.year }}</td>
+                <td><a href="{% url 'class-details' c.id %}" class="btn btn-info rounded-0 text-light m-1">Lista uczniów</a></td>
+                <td><a href="{% url 'class-modify' c.id %}" class="btn btn-danger rounded-0 text-light m-1">Edytuj</a></td>
+            </tr>
             {% empty %}
             <ol>Lista pusta</ol>
         {% endfor %}
-    </ul>
+        </tbody>
+    </table>
+
 
 {% endblock %}

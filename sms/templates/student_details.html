@@ -1,11 +1,25 @@
 {% extends '__base__.html' %}
 {% block content %}
 
-    Imię: {{ student.first_name }} <br>
-    Nazwisko: {{ student.last_name }}<br>
-    Wiek: {{ student.age }}<br>
-    {% if student.year_of_birth %}
-        Rok urodzenia: {{ student.year_of_birth }}
-    {% endif %}
+    <h1>Szczegóły</h1>
+
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Imię</th>
+            <th scope="col">Nazwisko</th>
+            <th scope="col">Wiek</th>
+            <th scope="col">Rok urodzenia</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ student.first_name }}</td>
+                <td>{{ student.last_name }}</td>
+                <td>{{ student.age }}</td>
+                <td>{% if student.year_of_birth %} {{ student.year_of_birth }} {% else %} Brak danych {% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
 
 {% endblock %}

@@ -20,10 +20,13 @@
                 <th scope="row">{{ forloop.counter }}</th>
                 <td><a href="{% url 'student-details' student.id %}">{{ student.first_name }}</a></td>
                 <td>{{ student.last_name }}</td>
-                <td>{% for class in student.school_class.all %}  {{ class.name }} (Rok rozpoczęcia: {{ class.year }}) {% endfor %}</td>
-                <td><button type="button" class="btn btn-success rounded-8 pt-0 pb-0">Modyfikuj</button></td>
-                <td><button type="button" class="btn btn-danger rounded-8 pt-0 pb-0">Usuń</button></td>
+                <td>{% for class in student.school_class.all %}  {{ class.name }} (Rok rozpoczęcia: {{ class.year }}
+                    ) {% endfor %}</td>
+                <td><a href="" class="btn btn-info rounded-0 text-light m-1">Modyfikuj</a></td>
+                <td><a href="" class="btn btn-danger rounded-0 text-light m-1">Usuń</a></td>
             </tr>
+            {% empty %}
+            <ol>Lista pusta</ol>
         {% endfor %}
         </tbody>
     </table>

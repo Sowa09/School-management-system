@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}{% endblock title %} Edukator Kielce</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     {#    <link rel="stylesheet" href="{% static 'js.js' %}">#}
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
@@ -46,7 +47,6 @@
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'class-add' %}">Stwórz klasę</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'class-list' %}">Lista klas</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'subject-add' %}">Dodaj przedmiot</a>
-{#            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Status</a>#}
         </div>
     </div>
     <!-- Page content wrapper-->
@@ -60,7 +60,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
                         <li class="nav-item active"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">Link</a></li>
+                        <li class="nav-item"><a class="nav-link" href="http://www.edukatorkielce.pl/">EdukatorKielce</a></li>
                         <li class="nav-item dropdown">
 
                             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
