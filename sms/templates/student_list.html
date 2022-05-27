@@ -6,7 +6,7 @@
     <ul>
         {% for s in student_list %}
             <ol><a href="{% url 'student-details' s.id %}"> {{ forloop.counter }}. {{ s.first_name }}
-                - {{ s.last_name }}</a>
+                 {{ s.last_name }} KLASA: {% for class in s.school_class.all %}  {{ class.name }} ({{ class.year }}) {% endfor %}</a>
             </ol>
             {% empty %}
             <ol>Lista pusta</ol>

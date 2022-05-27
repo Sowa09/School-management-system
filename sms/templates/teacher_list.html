@@ -1,11 +1,12 @@
 {% extends '__base__.html' %}
 
 {% block content %}
-
     <h1>Nauczyciele</h1>
     <ul>
         {% for t in teacher_list %}
-            <ol> {{ t.first_name }}  {{ t.last_name }}</ol>
+            <ol> Imię: {{ t.first_name }}<br>
+                 Nazwisko:{{ t.last_name }} <br>
+                 Przedmiot: {% for subject in t.subject.all %} {{ subject }} {% endfor %}</ol>
             {% empty %}
             <ol>Lista pusta</ol>
         {% endfor %}
