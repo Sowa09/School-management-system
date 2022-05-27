@@ -6,7 +6,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic.list import ListView
 
-from .models import Teacher, TeacherForm, Student, StudentForm, PresenceListForm, SchoolClassForm, SchoolClass
+from .models import Teacher, TeacherForm, Student, StudentForm, PresenceListForm, SchoolClassForm, SchoolClass, \
+    SubjectForm
 
 
 class LogoutView(View):
@@ -107,6 +108,8 @@ class StudentDetailsView(LoginRequiredMixin, View):
         return render(request, 'student_details.html', context)
 
 
+# CLASS VIEWS
+
 class SchoolClassListView(LoginRequiredMixin, ListView):
     login_url = '/'
     redirect_field_name = 'index'
@@ -150,12 +153,33 @@ class SchoolClassModify(LoginRequiredMixin, View):
             return redirect('class-list')
 
 
-class StudentInClassDetailView(LoginRequiredMixin, ListView):
+class StudentClassDetailsView(LoginRequiredMixin, View):
     login_url = '/'
     redirect_field_name = 'index'
 
-    model = Student
-    template_name = 'class_details.html'
-    context_object_name = 'class_details'
-    queryset = Student.objects.all().order_by('first_name')
+    def get(self, request, class_id):
+        class_details = get_object_or_404(SchoolClass, pk=class_id)
+        students = Student.objects.filter(school_class=class_id)
+        context = {
+            'class': class_details,
+            'students': students,
+        }
+        return render(request, 'class_details.html', context)
 
+
+# SUBJECT VIEWS
+
+class SubjectFormView(LoginRequiredMixin, View):
+    login_url = '/'
+    redirect_field_name = 'index'
+
+    def get(self, request):
+        form = SubjectForm
+        return render(request, 'subject_form.html', {'form': form})
+
+    def post(self, request):
+        form = SubjectForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return render(request, 'subject_form.html', {'form': form})
+        return render(request, 'subject_form.html', {'form': form})
