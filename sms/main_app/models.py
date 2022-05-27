@@ -1,27 +1,14 @@
 import datetime
 
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
 from django.forms.models import ModelForm
-from django.utils.timezone import now
 
 GENDER_CHOICES = [
     ('M', 'Mężczyzna'),
     ('K', 'Kobieta')
-]
-
-SCHOOL_SUBJECT = [
-    ('Pol', 'Język polski'),
-    ('Ang', 'Język angielski'),
-    ('His', 'Historia'),
-    ('Wos', 'Wiedza o społeczeństwie'),
-    ('Pp', 'Podstawy przedsiębiorczości'),
-    ('Geo', 'Geografia'),
-    ('Biol', 'Biologia'),
-    ('Chem', 'Chemia'),
-    ('Fiz', 'Fizyka'),
-    ('Mat', 'Matematyka'),
-    ('Inf', 'Informatyka'),
 ]
 
 GRADES = (
@@ -44,6 +31,11 @@ GRADES = (
 )
 
 
+def validate_year(value):
+    if value < 14 or value > 99:
+        raise ValidationError(f"Proszę podać poprawny wiek")
+
+
 def current_year():
     return datetime.date.today().year
 
@@ -55,17 +47,24 @@ def max_value_current_year(value):
 # MODELS
 
 class SchoolClass(models.Model):
+    name = models.CharField(max_length=8)
     year = models.PositiveIntegerField(
-        default=now,
+        default=current_year(),
         validators=[MinValueValidator(2020), max_value_current_year]
     )
 
     def __str__(self):
-        return f'{str(self.year)}'
+        return f'Rok: {str(self.year)} Klasa: {self.name} '
+
+
+class SchoolClassForm(ModelForm):
+    class Meta:
+        model = SchoolClass
+        fields = '__all__'
 
 
 class Subject(models.Model):
-    name = models.CharField(choices=SCHOOL_SUBJECT, max_length=32, verbose_name='Przedmiot')
+    name = models.CharField(max_length=32, verbose_name='Przedmiot')
     student = models.ManyToManyField('Student')
 
     def __str__(self):
@@ -76,10 +75,10 @@ class Teacher(models.Model):
     first_name = models.CharField(max_length=32, verbose_name='Imię')
     last_name = models.CharField(max_length=32, verbose_name='Nazwisko')
     gender = models.CharField(choices=GENDER_CHOICES, max_length=16, verbose_name='Płeć')
-    subject_info = models.ManyToManyField(Subject, blank=True)
+    subject = models.ManyToManyField(Subject, verbose_name='Przedmiot')
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        return f'{self.first_name} {self.last_name} {self.subject}'
 
 
 class TeacherForm(ModelForm):
@@ -90,16 +89,16 @@ class TeacherForm(ModelForm):
 
 class Grades(models.Model):
     grade = models.FloatField(choices=GRADES)
-    school_subject = models.ManyToManyField(Subject)
+    subject = models.ManyToManyField(Subject)
 
 
 class Student(models.Model):
     first_name = models.CharField(max_length=32, verbose_name='Imię')
     last_name = models.CharField(max_length=32, verbose_name='Nazwisko')
     gender = models.CharField(choices=GENDER_CHOICES, max_length=16, verbose_name='Płeć')
-    age = models.IntegerField(verbose_name='Wiek')
+    age = models.IntegerField(verbose_name='Wiek', validators=[validate_year])
     grades = models.ManyToManyField(Grades)
-    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE, default=None)
+    school_class = models.ManyToManyField(SchoolClass, verbose_name='Rok rozpoczęcia nauki/klasa')
 
     def __str__(self):
         return f'{self.first_name} {self.last_name} {self.age}'
