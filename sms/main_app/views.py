@@ -17,6 +17,17 @@ class LogoutView(View):
 
 
 class LoginView(View):
+    """
+    Simple class permitting user to log into account and let him see the resources of web.
+
+    Attributes
+    username : str
+        username necessary to login
+    password : int, str
+        hidden password necessary to log into account
+
+    """
+
     def get(self, request):
         return render(request, '__login__.html')
 
@@ -40,7 +51,7 @@ class BaseView(LoginRequiredMixin, View):
         return render(request, '__base__.html')
 
 
-# TEACHER VIEWS
+# TEACHER
 
 class TeacherListView(LoginRequiredMixin, ListView):
     login_url = '/'
@@ -68,7 +79,7 @@ class TeacherFormView(LoginRequiredMixin, View):
         return render(request, 'teacher_form.html', {'form': form})
 
 
-# STUDENT VIEWS
+# STUDENT
 
 class StudentListView(LoginRequiredMixin, ListView):
     login_url = '/'
@@ -108,7 +119,7 @@ class StudentDetailsView(LoginRequiredMixin, View):
         return render(request, 'student_details.html', context)
 
 
-# CLASS VIEWS
+# CLASS
 
 class SchoolClassListView(LoginRequiredMixin, ListView):
     login_url = '/'
@@ -137,6 +148,10 @@ class SchoolClassFormView(LoginRequiredMixin, View):
 
 
 class SchoolClassModify(LoginRequiredMixin, View):
+    """
+    Class that permit user to modify view.
+    """
+
     login_url = '/'
     redirect_field_name = 'index'
 
@@ -167,7 +182,7 @@ class StudentClassDetailsView(LoginRequiredMixin, View):
         return render(request, 'class_details.html', context)
 
 
-# SUBJECT VIEWS
+# SUBJECT
 
 class SubjectFormView(LoginRequiredMixin, View):
     login_url = '/'
@@ -183,3 +198,6 @@ class SubjectFormView(LoginRequiredMixin, View):
             form.save()
             return render(request, 'subject_form.html', {'form': form})
         return render(request, 'subject_form.html', {'form': form})
+
+# GRADES
+
