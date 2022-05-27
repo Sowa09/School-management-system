@@ -7,7 +7,7 @@
             <br>
             Nazwa: {{ c.name }} <br>
             Rok rozpoczęcia:{{ c.year }} <br>
-            <a href="{% url 'class-details' %}">Lista uczniów</a> <br>
+            <a href="{% url 'class-details' c.id %}">Lista uczniów</a> <br>
             <a href="{% url 'class-modify' c.id %}">Edytuj klasę</a><br>
             {% empty %}
             <ol>Lista pusta</ol>

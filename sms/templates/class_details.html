@@ -2,6 +2,27 @@
 
 {% block content %}
 
-    Klasa: {% for s in class_details %} {{ s.school_class }} {% endfor %}
+    <h1> Klasa: {{ class.name }} Rok: {{ class.year }} </h1>
+
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Imię</th>
+            <th scope="col">Nazwisko</th>
+            <th scope="col">Oceny</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for student in students %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ student.first_name }}</td>
+                <td>{{ student.last_name }}</td>
+                <td><button type="button" class="btn btn-primary rounded-8 pt-0 pb-0">Pokaż</button></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}

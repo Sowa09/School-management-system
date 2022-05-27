@@ -3,14 +3,29 @@
 {% block content %}
 
     <h1>Uczniowie</h1>
-    <ul>
-        {% for s in student_list %}
-            <ol><a href="{% url 'student-details' s.id %}"> {{ forloop.counter }}. {{ s.first_name }}
-                 {{ s.last_name }} KLASA: {% for class in s.school_class.all %}  {{ class.name }} ({{ class.year }}) {% endfor %}</a>
-            </ol>
-            {% empty %}
-            <ol>Lista pusta</ol>
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Imię</th>
+            <th scope="col">Nazwisko</th>
+            <th scope="col">Klasa</th>
+            <th scope="col">Modyfikuj</th>
+            <th scope="col">Usuń</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for student in student_list %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td><a href="{% url 'student-details' student.id %}">{{ student.first_name }}</a></td>
+                <td>{{ student.last_name }}</td>
+                <td>{% for class in student.school_class.all %}  {{ class.name }} (Rok rozpoczęcia: {{ class.year }}) {% endfor %}</td>
+                <td><button type="button" class="btn btn-success rounded-8 pt-0 pb-0">Modyfikuj</button></td>
+                <td><button type="button" class="btn btn-danger rounded-8 pt-0 pb-0">Usuń</button></td>
+            </tr>
         {% endfor %}
-    </ul>
+        </tbody>
+    </table>
 
 {% endblock %}
