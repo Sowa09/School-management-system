@@ -1,6 +1,10 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
@@ -11,6 +15,10 @@ from .models import Teacher, TeacherForm, Student, StudentForm, PresenceListForm
 
 
 class LogoutView(View):
+    """
+    Simple logout view.
+    """
+
     def get(self, request):
         logout(request)
         return redirect('login')
@@ -41,6 +49,45 @@ class LoginView(View):
             return redirect('index')
         else:
             return HttpResponse('Błędny login lub hasło')
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def create_user(request):
+    """
+    Function where superuser can create new user
+    :param request:
+    :return:new user from django 'User' model
+    """
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('index')
+    else:
+        form = UserCreationForm()
+    return render(request, 'signup.html', {'form': form})
+
+
+@login_required()
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Twoje hasło zostało zmienione!')
+            return redirect('change-password')
+        else:
+            messages.error(request, 'Proszę o poprawienie błędów.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'accounts/change_password.html', {
+        'form': form,
+    })
 
 
 class BaseView(LoginRequiredMixin, View):
@@ -200,4 +247,3 @@ class SubjectFormView(LoginRequiredMixin, View):
         return render(request, 'subject_form.html', {'form': form})
 
 # GRADES
-
