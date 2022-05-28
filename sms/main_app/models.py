@@ -37,8 +37,8 @@ def validate_year(value):
     :param value:
     :return:Year Validation
     """
-    if value < 14 or value > 99:
-        raise ValidationError(f"Proszę podać poprawny wiek")
+    if value < 16 or value > 80:
+        raise ValidationError(f"Proszę podać wiek z zakresu 16-80")
 
 
 def current_year():
@@ -55,7 +55,7 @@ def max_value_current_year(value):
     :param value:
     :return:
     """
-    return MaxValueValidator(current_year())(value)
+    return MaxValueValidator(current_year() + 1)(value)
 
 
 # MODELS
@@ -143,3 +143,8 @@ class PresenceListForm(ModelForm):
         model = PresenceList
         fields = '__all__'
 
+
+class SchoolSubjectTopics(models.Model):
+    name = models.CharField(max_length=64)
+    subjects = models.ManyToManyField(Subject)
+    grades = models.ManyToManyField(Grades)
