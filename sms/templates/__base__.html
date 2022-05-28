@@ -68,8 +68,8 @@
                                aria-expanded="false">{{ request.user.username }} </a>
 
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#!">Action</a>
-                                <a class="dropdown-item" href="">Zmiana hasła</a>
+                                <a class="dropdown-item" href="{% url 'new-user' %}">Dodaj konto nauczyciela</a>
+                                <a class="dropdown-item" href="{% url 'change-password' %}">Zmiana hasła</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{% url 'logout' %}">Wyloguj</a>
                             </div>
