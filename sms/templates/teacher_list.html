@@ -19,9 +19,9 @@
                 <th scope="row">{{ forloop.counter }}</th>
                 <td>{{ t.first_name }}</td>
                 <td>{{ t.last_name }}</td>
-                <td>{% for subject in t.subject.all %} {{ subject }} {% endfor %} </td>
+                <td>{% for subject in t.subject.all %} {{ subject }} <br> {% endfor %} </td>
                 <td><a href="" class="btn btn-info rounded-0 text-light m-1">Modyfikuj</a></td>
-                <td><a href="" class="btn btn-danger rounded-0 text-light m-1">Usuń</a></td>
+                <td><a href="{% url 'teacher-delete' t.id %}" class="btn btn-danger rounded-0 text-light m-1">Usuń</a></td>
             </tr>
             {% empty %}
             <ol>Lista pusta</ol>
