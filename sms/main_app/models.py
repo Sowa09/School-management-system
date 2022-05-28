@@ -32,26 +32,42 @@ GRADES = (
 
 
 def validate_year(value):
+    """
+    Year validation for student-age needs
+    :param value:
+    :return:Year Validation
+    """
     if value < 14 or value > 99:
         raise ValidationError(f"Proszę podać poprawny wiek")
 
 
 def current_year():
+    """
+    Function that returns current year
+    :return: current year
+    """
     return datetime.date.today().year
 
 
 def max_value_current_year(value):
+    """
+    Function that validates field year of school-class model
+    :param value:
+    :return:
+    """
     return MaxValueValidator(current_year())(value)
 
 
 # MODELS
 
 class SchoolClass(models.Model):
-    name = models.CharField(max_length=8)
+    name = models.CharField(max_length=8, verbose_name='Nazwa')
     year = models.PositiveIntegerField(
         default=current_year(),
-        validators=[MinValueValidator(2020), max_value_current_year]
-    )
+        validators=[MinValueValidator(2020), max_value_current_year], verbose_name='Rok')
+
+    class Meta:
+        unique_together = ['name', 'year']
 
     def __str__(self):
         return f'Rok: {str(self.year)} Klasa: {self.name} '
@@ -64,11 +80,17 @@ class SchoolClassForm(ModelForm):
 
 
 class Subject(models.Model):
-    name = models.CharField(max_length=32, verbose_name='Przedmiot')
+    name = models.CharField(max_length=32, verbose_name='Przedmiot', unique=True)
     student = models.ManyToManyField('Student')
 
     def __str__(self):
         return f'{self.name}'
+
+
+class SubjectForm(ModelForm):
+    class Meta:
+        model = Subject
+        fields = ['name']
 
 
 class Teacher(models.Model):
@@ -120,3 +142,4 @@ class PresenceListForm(ModelForm):
     class Meta:
         model = PresenceList
         fields = '__all__'
+
