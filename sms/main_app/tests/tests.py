@@ -44,7 +44,6 @@ def test_login_view_access(client):
     assert client.get('/student/list').status_code == 200
 
 
-################################# ZAPYTAĆ CZEMU NIE DZIAŁA POPRAWNIE
 
 @pytest.mark.django_db
 def test_class_modify(client):
