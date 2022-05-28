@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
+from django.views.generic.edit import DeleteView
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
@@ -74,6 +76,12 @@ def create_user(request):
 
 @login_required()
 def change_password(request):
+    """
+    Function that allows user to change his password
+    :param request:
+    :return: new password
+    """
+
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
@@ -91,11 +99,19 @@ def change_password(request):
 
 
 class BaseView(LoginRequiredMixin, View):
+    """
+    Base view with counter function.
+    """
+
     login_url = '/'
     redirect_field_name = 'index'
 
     def get(self, request):
-        return render(request, '__base__.html')
+        teacher_counter = Teacher.objects.count()
+        student_counter = Student.objects.count()
+        ctx = {'teacher_counter': teacher_counter,
+               'student_counter': student_counter}
+        return render(request, '__base__.html', ctx)
 
 
 # TEACHER
@@ -124,6 +140,14 @@ class TeacherFormView(LoginRequiredMixin, View):
             form.save()
             return redirect('teacher-list')
         return render(request, 'teacher_form.html', {'form': form})
+
+
+class DeleteTeacherView(LoginRequiredMixin, DeleteView):
+    login_url = '/'
+    redirect_field_name = 'index'
+
+    model = Teacher
+    success_url = reverse_lazy('teacher-list')
 
 
 # STUDENT
@@ -164,6 +188,14 @@ class StudentDetailsView(LoginRequiredMixin, View):
             'student': student_details
         }
         return render(request, 'student_details.html', context)
+
+
+class DeleteStudentView(LoginRequiredMixin, DeleteView):
+    login_url = '/'
+    redirect_field_name = 'index'
+
+    model = Student
+    success_url = reverse_lazy('student-list')
 
 
 # CLASS
