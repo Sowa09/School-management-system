@@ -53,13 +53,13 @@ class SigninLogoutTest(TestCase):
     """
     Login, logout tests. Passing wrong password or username tests.
     """
-    client = Client()
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.user = get_user_model().objects.create_user(username='test', password='12345')
         self.user.save()
+        self.client = Client()
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         self.user.delete()
 
     def test_correct(self):
@@ -83,18 +83,33 @@ class SigninLogoutTest(TestCase):
 
 @pytest.mark.django_db
 class CreateUSerTest(TestCase):
-    client = Client()
+    """
+    User creation test.
+    """
+
+    def setUp(self) -> None:
+        self.client = Client()
+
+    def tearDown(self) -> None:
+        self.user.delete()
 
     def test_create_user(self):
         self.user = User.objects.create_user(username='testuser', password='12345')
         response = self.client.post('/', {'uname': 'testuser', 'psw': '12345'})
         self.assertEqual(response.status_code, 302)
+        self.assertTrue(self.user is not None)
 
 
 @pytest.mark.django_db
 class ClassUpdateTest(TestCase):
-    def test_class_update(self):
+    """
+    Modify view test. Doesn't work yet.
+    """
+
+    def setUp(self) -> None:
         self.client = Client()
+
+    def test_class_update(self):
         sch_class = SchoolClass.objects.create(pk=1, name=3, year=2020)
         response = self.client.post(
             reverse('class-modify', kwargs={'pk': sch_class.id}),
@@ -107,19 +122,37 @@ class ClassUpdateTest(TestCase):
 
 
 @pytest.mark.django_db
-def test_counting_teachers_and_students(client):
-    Student.objects.create(first_name='Adam', last_name='Sokołowski', age=23)
-    Student.objects.create(first_name='Adam1', last_name='Momo', age=24)
-    Student.objects.create(first_name='Adam3', last_name='Kowalski', age=73)
+class CountingStudentsTeacherTest(TestCase):
+    """
+    Testing counting students and teachers in base view.
+    """
+    def setUp(self) -> None:
+        self.student1 = Student.objects.create(first_name='Adam', last_name='Sokołowski', age=23)
+        self.student2 = Student.objects.create(first_name='Adam1', last_name='Momo', age=24)
+        self.student3 = Student.objects.create(first_name='Adam3', last_name='Kowalski', age=73)
+        self.teacher1 = Teacher.objects.create(first_name='Agnieszka', last_name='Stępień')
+        self.teacher2 = Teacher.objects.create(first_name='Mariola', last_name='Kałamaga')
+        self.teacher3 = Teacher.objects.create(first_name='Magda', last_name='Kuternoga')
+        self.teacher4 = Teacher.objects.create(first_name='Magda1', last_name='Kuternoga1')
 
-    Teacher.objects.create(first_name='Agnieszka', last_name='Stępień')
-    Teacher.objects.create(first_name='Mariola', last_name='Kałamaga')
-    Teacher.objects.create(first_name='Magda', last_name='Kuternoga')
-    Teacher.objects.create(first_name='Magda1', last_name='Kuternoga1')
+    def tearDown(self) -> None:
+        pass
 
-    teacher_count = Teacher.objects.count()
-    student_count = Student.objects.count()
+    def test_count_students(self):
+        self.student_count = Student.objects.count()
+        self.assertEqual(self.student_count, 3)
 
-    assert student_count == 3
-    assert teacher_count == 4
+    def test_count_teacher(self):
+        self.teacher_count = Teacher.objects.count()
+        self.assertEqual(self.teacher_count, 4)
+
+    def test_count_students_wrong(self):
+        self.student_count = Student.objects.count()
+        self.assertTrue(self.student_count, 2)
+
+    def test_count_teacher_wrong(self):
+        self.teacher_count = Teacher.objects.count()
+        self.assertTrue(self.teacher_count, 5)
+
+
 
