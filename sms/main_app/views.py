@@ -6,14 +6,14 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
-from django.views.generic.edit import DeleteView
 
+from django.views.generic.edit import DeleteView, FormView, UpdateView
+from django.views.generic.list import ListView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from django.views.generic.list import ListView
 
-from .models import Teacher, TeacherForm, Student, StudentForm, PresenceListForm, SchoolClassForm, SchoolClass, \
-    SubjectForm
+from .models import Teacher, TeacherForm, Student, StudentForm, SchoolClassForm, SchoolClass, \
+    SubjectForm, SchoolSubjectTopicsForm, GradesForm
 
 
 class LogoutView(View):
@@ -226,7 +226,7 @@ class SchoolClassFormView(LoginRequiredMixin, View):
         return render(request, 'school_class_form.html', {'form': form})
 
 
-class SchoolClassModify(LoginRequiredMixin, View):
+class SchoolClassModify(LoginRequiredMixin, UpdateView):
     """
     Class that permit user to modify view.
     """
@@ -234,17 +234,14 @@ class SchoolClassModify(LoginRequiredMixin, View):
     login_url = '/'
     redirect_field_name = 'index'
 
-    def get(self, request, class_id):
-        c = SchoolClass.objects.get(pk=class_id)
-        form = SchoolClassForm(instance=c)
-        return render(request, 'edit_class.html', {'form': form})
+    model = SchoolClass
+    fields = '__all__'
+    template_name = 'school_class_update_form.html'
+    success_url = '/class/list'
 
-    def post(self, request, class_id):
-        c = SchoolClass.objects.get(pk=class_id)
-        form = SchoolClassForm(request.POST, instance=c)
-        if form.is_valid():
-            form.save()
-            return redirect('class-list')
+    def post(self, request, *args, **kwargs):
+        print('POST', request.POST, kwargs)
+        return super().post(request, *args, **kwargs)
 
 
 class StudentClassDetailsView(LoginRequiredMixin, View):
@@ -278,4 +275,29 @@ class SubjectFormView(LoginRequiredMixin, View):
             return render(request, 'subject_form.html', {'form': form})
         return render(request, 'subject_form.html', {'form': form})
 
+
+class AddTopicToSubject(LoginRequiredMixin, View):
+    login_url = '/'
+    redirect_field_name = 'index'
+
+    def get(self, request):
+        form = SchoolSubjectTopicsForm
+        return render(request, 'topic_form.html', {'form': form})
+
+    def post(self, request):
+        form = SchoolSubjectTopicsForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+        return render(request, 'topic_form.html', {'form': form})
+
+
 # GRADES
+
+class GradesFormView(LoginRequiredMixin, FormView):
+    login_url = '/'
+    redirect_field_name = 'index'
+
+    template_name = 'add_grade.html'
+    form_class = GradesForm
+    success_url = '/grades/add'
