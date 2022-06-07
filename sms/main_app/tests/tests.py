@@ -20,22 +20,21 @@ def create_user():
 @pytest.mark.django_db
 def test_add_student_to_db():
     """
-    Function test adding student to database
+    Testing student form.
     :return: asserts
     """
     student = Student.objects.create(first_name='Adam', last_name='Korzeniak', age=23)
     second_student = Student.objects.create(first_name='Adama', last_name='Korzeniak1', age=24)
 
     assert len(Student.objects.all()) == 2
-    assert Student.objects.get(first_name="Adam") == student
-    assert Student.objects.get(last_name="Korzeniak") == student
-    assert Student.objects.get(age=23) == student
+    assert Student.objects.get(first_name='Adam', last_name='Korzeniak', age=23) == student
+    assert Student.objects.get(first_name='Adama', last_name='Korzeniak1', age=24) == second_student
 
 
 @pytest.mark.django_db
 def test_login_view_access(client):
     """
-    Function test if client can log into app
+    Test if client can log into app
     :param client:
     :return: asserts
     """
@@ -56,7 +55,6 @@ class SigninLogoutTest(TestCase):
 
     def setUp(self) -> None:
         self.user = get_user_model().objects.create_user(username='test', password='12345')
-        self.user.save()
         self.client = Client()
 
     def tearDown(self) -> None:
@@ -101,32 +99,13 @@ class CreateUSerTest(TestCase):
 
 
 @pytest.mark.django_db
-class ClassUpdateTest(TestCase):
-    """
-    Modify view test. Doesn't work yet.
-    """
-
-    def setUp(self) -> None:
-        self.client = Client()
-
-    def test_class_update(self):
-        sch_class = SchoolClass.objects.create(pk=1, name=3, year=2020)
-        response = self.client.post(
-            reverse('class-modify', kwargs={'pk': sch_class.id}),
-            {'name': '6', 'year': 2022})
-
-        self.assertEqual(response.status_code, 302)
-        sch_class.refresh_from_db()
-        self.assertEqual(sch_class.name, 6)
-        self.assertEqual(sch_class.year, 2022)
-
-
-@pytest.mark.django_db
 class CountingStudentsTeacherTest(TestCase):
     """
     Testing counting students and teachers in base view.
     """
+
     def setUp(self) -> None:
+        self.client = Client()
         self.student1 = Student.objects.create(first_name='Adam', last_name='Sokołowski', age=23)
         self.student2 = Student.objects.create(first_name='Adam1', last_name='Momo', age=24)
         self.student3 = Student.objects.create(first_name='Adam3', last_name='Kowalski', age=73)
@@ -155,4 +134,41 @@ class CountingStudentsTeacherTest(TestCase):
         self.assertTrue(self.teacher_count, 5)
 
 
+@pytest.mark.django_db
+def test_add_class_to_db(client):
+    """
+    Function test SchoolClass form.
+    :return: asserts
+    """
+    create_user()
+    login = client.post('/', {'uname': 'testuser', 'psw': '12345'})
+    new_class = SchoolClass.objects.create(name='32', year=2021)
+    response = client.get('/student/add')
 
+    assert login.status_code == 302
+    assert response.status_code == 200
+    assert SchoolClass.objects.count() == 1
+    assert SchoolClass.objects.get(name='32', year=2021) == new_class
+
+
+@pytest.mark.django_db
+class ClassUpdateTest(TestCase):
+    """
+    Modify view test.
+    """
+
+    def setUp(self) -> None:
+        self.client = Client()
+        self.user = get_user_model().objects.create_user(username='test', password='12345')
+
+    def test_class_update(self):
+        sch_class = SchoolClass.objects.create(pk=1, name=3, year=2020)
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse(('class-modify'), kwargs={'pk': sch_class.id}),
+            {'name': '6', 'year': 2022})
+
+        self.assertEqual(response.status_code, 302)
+        sch_class.refresh_from_db()
+        self.assertEqual(sch_class.name, '6')
+        self.assertEqual(sch_class.year, 2022)
