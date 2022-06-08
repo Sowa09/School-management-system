@@ -172,3 +172,15 @@ class ClassUpdateTest(TestCase):
         sch_class.refresh_from_db()
         self.assertEqual(sch_class.name, '6')
         self.assertEqual(sch_class.year, 2022)
+
+    def test_class_no_update(self):
+        sch_class = SchoolClass.objects.create(pk=1, name=3, year=2020)
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse(('class-modify'), kwargs={'pk': sch_class.id}),
+            {'name': '', 'year': ''})
+
+        self.assertEqual(response.status_code, 200)
+        sch_class.refresh_from_db()
+        self.assertEqual(sch_class.name, '3')
+        self.assertEqual(sch_class.year, 2020)
