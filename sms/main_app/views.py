@@ -13,7 +13,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 
 from .models import Teacher, TeacherForm, Student, StudentForm, SchoolClassForm, SchoolClass, \
-    SubjectForm, SchoolSubjectTopicsForm, GradesForm
+    SubjectForm, SchoolSubjectTopicsForm, GradesForm, Subject, Grades, SchoolSubjectTopics
 
 
 class LogoutView(View):
@@ -127,6 +127,9 @@ class TeacherListView(LoginRequiredMixin, ListView):
 
 
 class TeacherFormView(LoginRequiredMixin, View):
+    """
+    Form where we can add teacher into db.
+    """
     login_url = '/'
     redirect_field_name = 'index'
 
@@ -153,6 +156,9 @@ class DeleteTeacherView(LoginRequiredMixin, DeleteView):
 # STUDENT
 
 class StudentListView(LoginRequiredMixin, ListView):
+    """
+    List of students.
+    """
     login_url = '/'
     redirect_field_name = 'index'
 
@@ -163,6 +169,9 @@ class StudentListView(LoginRequiredMixin, ListView):
 
 
 class StudentFormView(LoginRequiredMixin, View):
+    """
+    Form when we can add students to database.
+    """
     login_url = '/'
     redirect_field_name = 'index'
 
@@ -179,6 +188,9 @@ class StudentFormView(LoginRequiredMixin, View):
 
 
 class StudentDetailsView(LoginRequiredMixin, View):
+    """
+    Details of each student in the list.
+    """
     login_url = '/'
     redirect_field_name = 'index'
 
@@ -201,6 +213,9 @@ class DeleteStudentView(LoginRequiredMixin, DeleteView):
 # CLASS
 
 class SchoolClassListView(LoginRequiredMixin, ListView):
+    """
+    List of classes.
+    """
     login_url = '/'
     redirect_field_name = 'index'
 
@@ -211,6 +226,9 @@ class SchoolClassListView(LoginRequiredMixin, ListView):
 
 
 class SchoolClassFormView(LoginRequiredMixin, View):
+    """
+    Form when you can add school to database.
+    """
     login_url = '/'
     redirect_field_name = 'index'
 
@@ -228,7 +246,7 @@ class SchoolClassFormView(LoginRequiredMixin, View):
 
 class SchoolClassModify(LoginRequiredMixin, UpdateView):
     """
-    Class that permit user to modify view.
+    Class that permit user to modify school class.
     """
 
     login_url = '/'
@@ -261,6 +279,9 @@ class StudentClassDetailsView(LoginRequiredMixin, View):
 # SUBJECT
 
 class SubjectFormView(LoginRequiredMixin, View):
+    """
+    Form when you can add subject.
+    """
     login_url = '/'
     redirect_field_name = 'index'
 
@@ -277,6 +298,9 @@ class SubjectFormView(LoginRequiredMixin, View):
 
 
 class AddTopicToSubject(LoginRequiredMixin, View):
+    """
+    Form for topic, you can add topic to subject.
+    """
     login_url = '/'
     redirect_field_name = 'index'
 
@@ -301,3 +325,21 @@ class GradesFormView(LoginRequiredMixin, FormView):
     template_name = 'add_grade.html'
     form_class = GradesForm
     success_url = '/grades/add'
+
+
+class StudentTopicGradeSubjectView(View):
+    """
+    Still working on it.
+    """
+    def get(self, request):
+        subject = Subject.objects.all().order_by('name')
+        grades = Grades.objects.all()
+        student = Student.objects.all()
+        topic = SchoolSubjectTopics.objects.all()
+        ctx = {
+            'subject': subject,
+            'grades': grades,
+            'student': student,
+            'topic': topic,
+        }
+        return render(request, 'grades_list.html', ctx)
