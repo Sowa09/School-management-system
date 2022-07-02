@@ -6,6 +6,7 @@ from django.urls import reverse
 from main_app.models import Student, SchoolClass, Teacher
 import pytest
 from django.contrib.auth.models import User
+import pdb
 
 
 def create_user():
@@ -67,10 +68,12 @@ class SigninLogoutTest(TestCase):
     def test_wrong_username(self):
         user = authenticate(username='adam', password='12345')
         self.assertFalse(user is not None and user.is_authenticated)
+        # or
 
     def test_wrong_password(self):
         user = authenticate(username='test', password='123456')
         self.assertFalse(user is not None and user.is_authenticated)
+        # or
 
     def test_logout(self):
         user = authenticate(username='test', password='12345')
@@ -161,6 +164,9 @@ class ClassUpdateTest(TestCase):
         self.client = Client()
         self.user = get_user_model().objects.create_user(username='test', password='12345')
 
+    def tearDown(self) -> None:
+        pass
+
     def test_class_update(self):
         sch_class = SchoolClass.objects.create(pk=1, name=3, year=2020)
         self.client.force_login(self.user)
@@ -184,3 +190,25 @@ class ClassUpdateTest(TestCase):
         sch_class.refresh_from_db()
         self.assertEqual(sch_class.name, '3')
         self.assertEqual(sch_class.year, 2020)
+
+
+# @pytest.mark.django_db
+# class TeacherFormTest(TestCase):
+#     """
+#     Tests for teacher form view.
+#     """
+#
+#     def setUp(self) -> None:
+#         self.client = Client()
+#         self.user = get_user_model().objects.create_user(username='test', password='12345')
+#
+#     def tearDown(self) -> None:
+#         pass
+#
+#     def test_teacher_add(self):
+#         self.client.force_login(self.user)
+#         response = self.client.post(reverse('teacher-add'),
+#                                     {'first_name': 'Robert', 'last_name': 'Kowalski', 'gender': '32',
+#                                      'subject': 'Chemia'})
+#
+#         self.assertEqual(response.status_code, 302)
