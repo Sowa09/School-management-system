@@ -51,6 +51,10 @@
                 klas</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'subject-add' %}">Dodaj
                 przedmiot</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'topic-add' %}">Dodaj
+                temat zajęć</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'grades-add' %}">Dodaj
+                ocenę</a>
         </div>
     </div>
     <!-- Page content wrapper-->
@@ -64,7 +68,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
                         <li class="nav-item active"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="http://www.edukatorkielce.pl/">EdukatorKielce</a>
+                        <li class="nav-item"><a class="nav-link" href="http://www.edukatorkielce.pl/" target="_blank">EdukatorKielce</a>
                         </li>
                         <li class="nav-item dropdown">
 
@@ -92,38 +96,37 @@
                   href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
             <div class="container bootstrap snippets bootdey">
             <div class="row">
-            <div class="col-lg-2 col-sm-6">
-                <div class="circle-tile ">
-                    <a href="#">
-                        <div class="circle-tile-heading dark-blue"><i class="fa fa-users fa-fw fa-3x"></i></div>
-                    </a>
-                    <div class="circle-tile-content dark-blue">
-                        <div class="circle-tile-description text-faded"> Uczniów</div>
-                        <div class="circle-tile-number text-faded ">{{ student_counter }}</div>
-                        <a class="circle-tile-footer" href="{% url 'student-list' %}">Więcej informacji<i
-                                class="fa fa-chevron-circle-right"></i></a>
+                <div class="col-lg-2 col-sm-6">
+                    <div class="circle-tile ">
+                        <a href="#">
+                            <div class="circle-tile-heading dark-blue"><i class="fa fa-users fa-fw fa-3x"></i></div>
+                        </a>
+                        <div class="circle-tile-content dark-blue">
+                            <div class="circle-tile-description text-faded"> Uczniów</div>
+                            <div class="circle-tile-number text-faded ">{{ student_counter }}</div>
+                            <a class="circle-tile-footer" href="{% url 'student-list' %}">Więcej informacji<i
+                                    class="fa fa-chevron-circle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-sm-6">
+                    <div class="circle-tile ">
+                        <a href="#">
+                            <div class="circle-tile-heading red"><i class="fa fa-users fa-fw fa-3x"></i></div>
+                        </a>
+                        <div class="circle-tile-content red">
+                            <div class="circle-tile-description text-faded"> Nauczycieli</div>
+                            <div class="circle-tile-number text-faded ">{{ teacher_counter }}</div>
+                            <a class="circle-tile-footer" href="{% url 'teacher-list' %}">Więcej informacji<i
+                                    class="fa fa-chevron-circle-right"></i></a>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-lg-2 col-sm-6">
-                <div class="circle-tile ">
-                    <a href="#">
-                        <div class="circle-tile-heading red"><i class="fa fa-users fa-fw fa-3x"></i></div>
-                    </a>
-                    <div class="circle-tile-content red">
-                        <div class="circle-tile-description text-faded"> Nauczycieli</div>
-                        <div class="circle-tile-number text-faded ">{{ teacher_counter }}</div>
-                        <a class="circle-tile-footer" href="{% url 'teacher-list' %}">Więcej informacji<i
-                                class="fa fa-chevron-circle-right"></i></a>
-                    </div>
-                </div>
-            </div>
-
         {% endblock content %}
+
         <!-- //--------------------------- page content end ---------------------// -->
-        </div>
-        </div>
 
 
 </body>

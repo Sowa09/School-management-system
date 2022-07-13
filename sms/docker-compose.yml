@@ -1,0 +1,31 @@
+version: "3"
+services:
+  baza:
+    image: postgres
+    volumes:
+      - dane_bazy:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - baza-net
+
+  my_app:
+    build: ./
+    image: django_img
+    networks:
+      - baza-net
+    ports:
+      - "8080:8080"
+    depends_on:
+      - baza
+    links:
+      - baza:baza
+
+networks:
+  baza-net:
+    driver: bridge
+
+volumes:
+  dane_bazy:

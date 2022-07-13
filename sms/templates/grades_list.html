@@ -1,10 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends '__base__.html' %}
+
+{% block content %}
+    <h1>Oceny</h1>
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Przedmiot</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for subject in subject %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ subject.name }}</td>
+                <td>{% for grade in subject.grade.all %}  <br> {{ grade }} {% endfor %}</td>
+            </tr>
+            {% empty %}
+            <ol>Lista pusta</ol>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}
