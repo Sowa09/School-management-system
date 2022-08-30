@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic import RedirectView
 from django.templatetags.static import static
-from django.views.generic import TemplateView
+
 
 from main_app.views import LoginView, LogoutView, BaseView, TeacherListView, TeacherFormView, StudentListView, \
     StudentFormView, StudentDetailsView, SchoolClassFormView, SchoolClassListView, SchoolClassModify, \
